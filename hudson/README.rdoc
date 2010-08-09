@@ -1,0 +1,125 @@
+= DESCRIPTION:
+
+Installs and configures Hudson CI server & node slaves.
+
+= REQUIREMENTS:
+
+== Platform:
+
+* 'default' - Currently supports Red Hat/CentOS 5.x.
+
+* 'node_ssh' - Any platform that is running sshd.
+
+* 'node_jnlp' - Unix platforms.
+
+* 'node_windows' - Windows platforms only.
+
+== Java:
+
+Hudson requires Java 1.5 or higher, which can be installed via the Opscode java cookbook or windows::java recipe.
+
+= ATTRIBUTES: 
+
+* hudson[:mirror] - Base URL for downloading Hudson (server)
+* hudson[:java] - Path to java binary for cli commands
+* hudson[:server][:home] - HUDSON_HOME directory
+* hudson[:server][:user] - User the Hudson server runs as
+* hudson[:server][:port] - TCP listen port for the Hudson server
+* hudson[:server][:url] - Base URL of the Hudson server
+* hudson[:server][:plugins] - Download the latest version of plugins in this list, bypassing update center
+* hudson[:node][:name] - Name of the node within Hudson
+* hudson[:node][:description] - Hudson node description
+* hudson[:node][:executors] - Number of node executors
+* hudson[:node][:home] - Home directory ("Remote FS root") of the node
+* hudson[:node][:labels] - Node labels
+* hudson[:node][:mode] - Node usage mode, "normal" or "exclusive" (tied jobs only)
+* hudson[:node][:launcher] - Node launch method, "jnlp", "ssh" or "command"
+* hudson[:node][:availability] - "always" keeps node on-line, "demand" off-lines when idle
+* hudson[:node][:in_demand_delay] - number of minutes for which jobs must be waiting in the queue before attempting to launch this slave.
+* hudson[:node][:idle_delay] - number of minutes that this slave must remain idle before taking it off-line. 
+* hudson[:node][:env] - "Node Properties" -> "Environment Variables"
+* hudson[:node][:user] - user the slave runs as
+* hudson[:node][:ssh_host] - Hostname or IP Hudson should connect to when launching an SSH slave
+* hudson[:node][:ssh_port] - SSH slave port
+* hudson[:node][:ssh_user] - SSH slave user name (only required if hudson server and slave user is different)
+* hudson[:node][:ssh_pass] - SSH slave password (not required when server is installed via default recipe)
+* hudson[:node][:ssh_private_key] - hudson master defaults to: `~/.ssh/id_rsa` (created by the default recipe)
+* hudson[:node][:jvm_options] - SSH slave JVM options
+
+= USAGE:
+
+== 'default' recipe
+
+Installs a Hudson CI server using the http://hudson-ci.org/redhat RPM.  The recipe also generates an ssh private key and stores the ssh public key in the node 'hudson[:pubkey]' attribute for use by the node recipes.
+
+== 'node_ssh' recipe
+
+Creates the user and group for the Hudson slave to run as and sets `.ssh/authorized_keys` to the 'hudson[:pubkey]' attribute.  The 'hudson-cli.jar'[1] is downloaded from the Hudson server and used to manage the nodes via the 'groovy'[2] cli command.  Hudson is configured to launch a slave agent on the node using its SSH slave plugin[3].
+
+[1] http://wiki.hudson-ci.org/display/HUDSON/Hudson+CLI
+[2] http://wiki.hudson-ci.org/display/HUDSON/Hudson+Script+Console
+[3] http://wiki.hudson-ci.org/display/HUDSON/SSH+Slaves+plugin
+
+== 'node_jnlp' recipe
+
+Creates the user and group for the Hudson slave to run as and '/jnlpJars/slave.jar' is downloaded from the Hudson server.
+TODO: runit_service or similar to launch the slave.
+
+== 'node_windows' recipe
+
+Creates the home directory for the node slave and sets 'HUDSON_HOME' and 'HUDSON_URL' system environment variables.  The 'winsw'[1] Windows service wrapper will be downloaded and installed, along with generating `hudson-slave.xml` from a template.  Hudson is configured with the node as a 'jnlp'[2] slave and '/jnlpJars/slave.jar' is downloaded from the Hudson server.  The 'hudsonslave' service will be started the first time the recipe is run or if the service is not running.  The 'hudsonslave' service will be restarted if '/jnlpJars/slave.jar' has changed.  The end results is functionally the same had you chosen the option to "Let Hudson control this slave as a Windows service"[3].
+
+[1] http://weblogs.java.net/blog/2008/09/29/winsw-windows-service-wrapper-less-restrictive-license
+[2] http://wiki.hudson-ci.org/display/HUDSON/Distributed+builds
+[3] http://wiki.hudson-ci.org/display/HUDSON/Installing+Hudson+as+a+Windows+service
+
+== 'hudson_cli' resource provider
+
+This resource can be used to execute the Hudson cli from your recipes.  For example, install plugins via update center and restart Hudson:
+
+    %w(git URLSCM build-publisher).each do |plugin|
+      hudson_cli "install-plugin #{plugin}"
+      hudson_cli "safe-restart"
+    end
+
+== 'hudson_node' resource provider
+
+This resource can be used to configure nodes as the 'node_ssh' and 'node_windows' recipes do or "Launch slave via execution of command on the Master".
+
+    hudson_node node[:fqdn] do
+      description  "My node for things, stuff and whatnot"
+      executors    5
+      remote_fs    "/var/hudson"
+      launcher     "command"
+      command      "ssh -i my_key #{node[:fqdn]} java -jar #{remote_fs}/slave.jar"
+      env          "ANT_HOME" => "/usr/local/ant", "M2_REPO" => "/dev/null"
+    end
+
+== 'manage_node' library
+
+The script to generate groovy that manages a node can be used standalone.  For example:
+
+    % ruby manage_node.rb name slave-hostname remote_fs /home/hudson ... | java -jar hudson-cli.jar -s http://hudson:8080/ groovy =
+
+= ISSUES
+
+* CLI authentication - http://issues.hudson-ci.org/browse/HUDSON-3796
+
+* CLI *-node commands fail with "No argument is allowed: nameofslave" - http://issues.hudson-ci.org/browse/HUDSON-5973
+
+= LICENSE & AUTHOR:
+
+Author:: Doug MacEachern (<dougm@vmware.com>)
+Copyright:: 2010, VMware, Inc
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
