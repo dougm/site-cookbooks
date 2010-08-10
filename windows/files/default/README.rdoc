@@ -1,0 +1,121 @@
+= Spork
+
+= DESCRIPTION:
+
+Spork is a utility to prepare remote Windows machines for cooking with Chef.
+
+No additional software is required to be installed on the remote machine prior to using spork other than the base Windows OS.
+
+= COMMANDS:
+
+== setup
+
+The setup command will download and install Ruby on the remote machine, followed by installation of the chef client gems.  Example:
+
+  C:\>spork.rb -m hostname setup
+  mkdir -p \\hostname\c$\chef
+  cp Z:/dougm/cookbooks/windows/files/default\chef-client-setup.vbs \\hostname\c$\chef\chef-client-setup.vbs
+  command: psexec \\hostname -w \chef cmd.exe /c cscript /nologo chef-client-setup.vbs
+
+  Downloading http://rubyforge.org/frs/download.php/69034/rubyinstaller-1.8.7-p249-rc2.exe
+  Installing rubyinstaller-1.8.7-p249-rc2.exe to C:\Ruby
+  rubyinstaller-1.8.7-p249-rc2.exe /dir=C:\Ruby /verysilent /tasks=assocfiles,modpath
+  C:\Ruby\bin\ruby.exe C:\Ruby\bin\gem install --no-ri --no-rdoc chef ruby-wmi windows-pr
+  ...
+  Successfully installed chef-0.9.0
+  ...
+  25 gems installed
+  cmd.exe exited on hostname with error code 0.
+
+== client
+
+Run chef-client on the remote machine.  Example:
+
+  C:\>spork.rb -m hostname client
+
+Any options you want to pass to chef-client need to follow the getopt '--' terminator:
+
+  C:\>spork.rb -m hostname client -- -S http://mychef-server
+
+== solo
+
+Run chef-solo on the remote machine.  If solo.rb and/or node.rb exist in the remote workdir the options will be added for you.  Example:
+
+  C:\>spork.rb -m hostname solo
+  command: psexec \\hostname -w \chef ruby C:\Ruby\bin\chef-solo -c solo.rb -j node.rb
+
+  INFO: Setting the run_list to ["windows::rdp"] from JSON
+  INFO: Starting Chef Run
+  INFO: Chef Run complete in 0.406253 seconds
+  INFO: Running report handlers
+  INFO: Report handlers complete
+  ruby exited on hostname with error code 0.
+
+Any options you want to pass to chef-solo need to follow the getopt '--' terminator:
+
+  C:\>spork.rb -m hostname solo -- -c my-solo.rb -j my-node.rb -l debug
+
+== mkdir
+
+Create a directory (recursively) on the remote machine, relative to the -w option (C:\chef by default).  Example:
+
+  C:\>spork.rb -m hostname mkdir cookbooks
+  mkdir -p \\hostname\c$\chef\cookbooks
+
+== cp
+
+Copy files or directories (recursively) to the remote machine, relative to the -w option (C:\chef by default).
+Example to copy config files to run solo:
+
+  C:\>spork.rb cp solo.rb node.rb
+  \\hostname\c$\chef directory already exists
+  cp z:\test\node.rb \\hostname\c$\chef\node.rb
+  cp z:\solo.rb \\hostname\c$\chef\solo.rb
+
+Example to copy the windows cookbook directory to C:\chef\cookbooks\:
+
+  C:\>spork.rb -m hostname cp cookbooks\windows -w chef\cookbooks
+  \\hostname\c$\chef\cookbooks directory already exists
+  cp -r z:\dougm\cookbooks\windows \\hostname\c$\chef\cookbooks
+
+== devgem
+
+Say you want to use a development version of a gem that you've built locally:
+
+  C:\>spork.rb -m hostname devgem z:\dougm\chef\chef\pkg\chef-0.9.1.gem
+  \\hostname\c$\chef directory already exists
+  cp z:\dougm\chef\chef\pkg\chef-0.9.1.gem \\hostname\c$\chef\chef-0.9.1.gem
+
+  command: psexec \\hostname -w \chef ruby C:\Ruby\bin\gem install chef-0.9.1.gem --ignore-dependencies --no-ri --no-rdoc
+
+  Successfully installed chef-0.9.1
+  1 gem installed
+  ruby exited on hostname with error code 0.
+
+= DEPENDENCIES:
+
+== Windows
+
+spork will only work on a Windows machine.
+
+== PsTools
+
+spork depends on psexec to run remote commands: http://technet.microsoft.com/en-us/sysinternals/bb897553.aspx
+
+You can also install on your local machine using the windows::sysinternals recipe.
+
+== Firewall
+
+If the remote machine has the Windows firewall enabled, you will need to run the following command on the remote machine:
+
+  netsh firewall set service remoteadmin enable
+
+= LINKS:
+
+Source:
+
+* http://github.com/dougm/cookbooks/tree/windows
+
+Chef:
+
+* http://wiki.opscode.com/display/chef/Home/
