@@ -1,8 +1,118 @@
 = DESCRIPTION:
 
+Recipes for automating common Windows system configuration and software install.
+
 = REQUIREMENTS:
+
+== Platform:
+
+* 'macrdc' - MacOSX
+
+* Windows 2000 or higher for the rest
 
 = ATTRIBUTES: 
 
+XXX see attributes/*.rb for now.
+
 = USAGE:
 
+== 'spork'
+
+Utility to prepare remote Windows machines for cooking with Chef,
+see: http://github.com/dougm/site-cookbooks/blob/master/windows/files/default/README.rdoc
+
+== 'registry' provider
+
+Create and modify registry keys.  Example:
+
+  #disable screen saver lock
+  windows_registry 'HKU\Administrator\Control Panel\Desktop' do
+    values 'ScreenSaverIsSecure' => 0
+  end
+
+== 'shortcut' provider
+
+Create a Windows shortcut (.lnk)
+
+== 'unzip' provider
+
+Pure-ruby unzip used by several recipes.
+
+== 'windows_privileged' library
+
+Elevate privileges for the current process for tasks such as loading Registry Hives from disk, rebooting the system, etc.
+
+== 'activate' recipe
+
+Activates Windows "online" if not already activated.
+
+== 'update' recipe
+
+Download and install Windows updates.
+
+== 'rdp' recipe
+
+Enable Remote Desktop
+
+== 'sysinternals' recipe
+
+Download and install the Sysinternals suite, see: http://technet.microsoft.com/en-us/sysinternals/bb842062.aspx
+
+== 'bginfo' recipe
+
+Creates a shortcut link to run bginfo in you startup folder.
+
+== 'cmake' recipe
+
+Download/install cmake and update system PATH.
+
+== 'erlang' recipe
+
+Download/install Erlang/OTP and update system PATH.
+
+== 'git' recipe
+
+Download/install msysgit, update system PATH and configure global core autocrlf setting.
+
+== 'java' recipe
+
+Download/install Java JDK, update system PATH and set JAVA_HOME system environment variable.
+
+== 'lua' recipe
+
+Download/install Lua.
+
+== 'perl' recipe
+
+Download/install ActivePerl.
+
+== 'python'
+
+Download/install Python and update system PATH.
+
+== 'xemacs'
+
+Download/install XEmacs.
+
+== 'macrdc'
+
+Download/install Remote Desktop Connection Client for Mac and generate ~/Documents/RDC\ Connections/*.rdp for each Windows node in the Chef server's inventory.  For use like so:
+
+  % open ~/Documents/RDC\ Connections/some-hostname.rdp
+
+= LICENSE & AUTHOR:
+
+Author:: Doug MacEachern (<dougm@vmware.com>)
+Copyright:: 2010, VMware, Inc
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
