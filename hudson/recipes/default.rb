@@ -63,6 +63,11 @@ when "centos", "redhat"
   end
 end
 
+user node[:hudson][:server][:user] do
+  action :modify
+  home node[:hudson][:server][:home]
+end
+
 directory "#{node[:hudson][:server][:home]}/.ssh" do
   action :create
   mode 0700
