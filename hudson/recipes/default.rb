@@ -59,7 +59,15 @@ when "centos", "redhat"
     notifies :stop, resources(:service => "hudson"), :immediately
     notifies :run, resources(:execute => "rpm-import-hudson-ci.org.key"), :immediately
     notifies :run, resources(:execute => "install-hudson"), :immediately
+    not_if { ::File.exists?(dst) }
   end
+end
+
+directory "#{node[:hudson][:server][:home]}/.ssh" do
+  action :create
+  mode 0700
+  owner node[:hudson][:server][:user]
+  group node[:hudson][:server][:user]
 end
 
 execute "ssh-keygen -f #{pkey} -N ''" do
@@ -74,17 +82,21 @@ ruby_block "store hudson ssh pubkey" do
   end
 end
 
+pid_file = "/var/run/hudson.pid"
 #restart if this run only added new plugins
 service "hudson" do
   only_if do
-    htime = File.mtime("/var/run/hudson.pid")
-    Dir["#{node[:hudson][:server][:home]}/plugins/*.hpi"].select { |file|
-      File.mtime(file) > htime
-    }.size > 0
+    if File.exists?(pid_file)
+      htime = File.mtime(pid_file)
+      Dir["#{node[:hudson][:server][:home]}/plugins/*.hpi"].select { |file|
+        File.mtime(file) > htime
+      }.size > 0
+    end
   end
   action :stop
 end
 
 service "hudson" do
   action :start
+  only_if { true }
 end
