@@ -18,6 +18,15 @@
 # limitations under the License.
 #
 
+unless node[:hudson][:server][:pubkey]
+  host = node[:hudson][:server][:host]
+  if host == node[:fqdn]
+    host = URI.parse(node[:hudson][:server][:url]).host
+  end
+  hudson_node = search(:node, "fqdn:#{host}").first
+  node.set[:hudson][:server][:pubkey] = hudson_node[:hudson][:server][:pubkey]
+end
+
 group node[:hudson][:node][:user] do
 end
 
@@ -46,7 +55,6 @@ file "#{node[:hudson][:node][:home]}/.ssh/authorized_keys" do
   mode 0600
   owner node[:hudson][:node][:user]
   group node[:hudson][:node][:user]
-  #XXX get via search
   content node[:hudson][:server][:pubkey]
 end
 
