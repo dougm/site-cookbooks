@@ -18,6 +18,8 @@ XXX see attributes/*.rb for now.
 
 == 'spork'
 
+NOTE: this command will be replaced by: http://tickets.opscode.com/browse/CHEF-1569
+
 Utility to prepare remote Windows machines for cooking with Chef,
 see: http://github.com/dougm/site-cookbooks/blob/master/windows/files/default/README.rdoc
 
@@ -41,6 +43,10 @@ Pure-ruby unzip used by several recipes.
 == 'windows_privileged' library
 
 Elevate privileges for the current process for tasks such as loading Registry Hives from disk, rebooting the system, etc.
+
+== 'chef_client' recipe
+
+Run chef-client as a Windows service.
 
 == 'activate' recipe
 
