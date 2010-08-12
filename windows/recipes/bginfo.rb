@@ -22,7 +22,7 @@
 
 node[:bginfo][:shortcuts].each do |dir|
   windows_shortcut "#{dir}\\#{node[:bginfo][:shortcut_name]}.lnk" do
-    target exe
+    target "#{node[:sysinternals][:dir]}\\bin\\bginfo.exe"
     arguments "/timer:0"
     description "created by Chef"
     action :create
