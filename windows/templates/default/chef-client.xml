@@ -39,11 +39,12 @@ THE SOFTWARE.
     The following value assumes that you have java in your PATH.
   -->
   <executable>C:\ruby\bin\ruby.exe</executable>
-  <arguments>C:/ruby/bin/chef-client -L c:/chef/client.log -c c:/chef/client.rb -i 1800 -s 20</arguments>
+  <arguments>C:/ruby/bin/chef-client -L c:/chef/log/client.log -c c:/chef/etc/client.rb -i 1800 -s 20</arguments>
   <!--
     interactive flag causes the empty black Java window to be displayed.
     I'm still debugging this.
   <interactive />
   -->
   <logmode>rotate</logmode>
+  <logpath>c:\chef\log</logpath>
 </service>

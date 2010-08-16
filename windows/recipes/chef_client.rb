@@ -20,7 +20,7 @@
 
 #knife windows bootstrap fqdn -r windows::chef_client
 
-home = 'c:\chef'
+home = 'c:\chef\bin'
 chef_exe = "#{home}\\chef-client.exe"
 service_name = "chefclient"
 
