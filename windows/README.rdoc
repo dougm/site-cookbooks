@@ -46,7 +46,7 @@ Elevate privileges for the current process for tasks such as loading Registry Hi
 
 == 'chef_client' recipe
 
-Run chef-client as a Windows service.
+Run chef-client as a Windows service.  Depends on .NET Framework, which can be installed with the windows::dotnetfx recipe.
 
 == 'activate' recipe
 
@@ -59,6 +59,10 @@ Download and install Windows updates.
 == 'rdp' recipe
 
 Enable Remote Desktop
+
+== 'dotnetfx' recipe
+
+Download and install .NET Framework Version 2.0 only if no other .NET Framework version is already installed.
 
 == 'sysinternals' recipe
 

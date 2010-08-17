@@ -12,7 +12,7 @@ Installs and configures Hudson CI server & node slaves.
 
 * 'node_jnlp' - Unix platforms.
 
-* 'node_windows' - Windows platforms only.
+* 'node_windows' - Windows platforms only.  Depends on .NET Framework, which can be installed with the windows::dotnetfx recipe.
 
 == Java:
 
