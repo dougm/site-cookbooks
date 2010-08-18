@@ -19,5 +19,6 @@
 
 default[:ant][:mirror] = "http://archive.apache.org/dist/ant/binaries"
 default[:ant][:release] = "1.7.1"
+default[:ant][:junit_jar] = "http://github.com/downloads/KentBeck/junit/junit-4.8.2.jar"
 default[:ant][:dir] = 'C:\ant'
 

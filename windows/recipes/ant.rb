@@ -26,6 +26,8 @@ end
 dir = "apache-ant-#{node[:ant][:release]}"
 zip = "#{dir}-bin.zip"
 dst = "#{node[:ant][:dir]}\\#{zip}"
+home = "#{node[:ant][:dir]}\\#{dir}"
+junit = "#{home}\\lib\\#{File.basename(node[:ant][:junit_jar])}"
 
 remote_file dst do
   source "#{node[:ant][:mirror]}/#{zip}"
@@ -38,8 +40,13 @@ windows_unzip dst do
   not_if { File.exists?("#{node[:ant][:dir]}\\#{dir}\\bin\\ant.bat") }
 end
 
+remote_file junit do
+  source node[:ant][:junit_jar]
+  not_if { File.exists?(junit) }
+end
+
 env "ANT_HOME" do
-  value "#{node[:ant][:dir]}\\#{dir}"
+  value home
 end
 
 env "PATH" do
