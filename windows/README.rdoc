@@ -84,6 +84,10 @@ Download/install Erlang/OTP and update system PATH.
 
 Download/install msysgit, update system PATH and configure global core autocrlf setting.
 
+== 'ant' recipe
+
+Download/install Apache Ant, update system PATH and set ANT_HOME system environment variable.
+
 == 'java' recipe
 
 Download/install Java JDK, update system PATH and set JAVA_HOME system environment variable.
