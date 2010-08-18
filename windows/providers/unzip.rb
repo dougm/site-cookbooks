@@ -27,7 +27,7 @@ def action_run
     zip.each do |entry|
       path = ::File.join(@new_resource.path, entry.name)
       FileUtils.mkdir_p(::File.dirname(path))
-      if @new_resource.force && ::File.exists?(path)
+      if @new_resource.force && ::File.exists?(path) && !::File.directory?(path)
         FileUtils.rm(path)
       end
       zip.extract(entry, path)
