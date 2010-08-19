@@ -1,0 +1,28 @@
+= DESCRIPTION:
+
+Recipes for old unix beards.
+
+= REQUIREMENTS:
+
+All the unix, the older the better.  Systems without so-called package management or packages of modern software versions.
+
+= ATTRIBUTES: 
+
+= USAGE:
+
+                '-.               .-'
+    _______________'-._________.-'______________
+    '-.           _    '-. .-'   _           .-'
+       '-.       (_)  /      \  (_)       .-'
+          '-.        /        \        .-'
+             '-.____/          \____.-'
+                    \_ _ _ _ _ /
+                //////////\\\\\\\\\
+               ///////////\\\\\\\\\\
+              |||| .-----------._||||
+              |||| '-|___|___|-' ||||
+              \\\\  '---------'  ////
+                \\\|||||||||||||///
+                  \\\\\\\\///////
+                    \\\\\\/////         jnh
+
