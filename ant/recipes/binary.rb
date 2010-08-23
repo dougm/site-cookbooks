@@ -34,17 +34,17 @@ junit = "#{home}/lib/#{File.basename(node[:ant][:junit_jar])}"
 
 remote_file dst do
   source "#{node[:ant][:mirror]}/#{tgz}"
-  not_if { File.exists?(dst) }
+  not_if { ::File.exists?(dst) }
 end
 
 execute "gunzip < #{tgz} | tar -xf -" do
   cwd node[:ant][:dir]
-  not_if { File.exists?("#{node[:ant][:dir]}/#{dir}/bin/ant") }
+  not_if { ::File.exists?("#{node[:ant][:dir]}/#{dir}/bin/ant") }
 end
 
 remote_file junit do
   source node[:ant][:junit_jar]
-  not_if { File.exists?(junit) }
+  not_if { ::File.exists?(junit) }
 end
 
 link "/usr/bin/ant" do
