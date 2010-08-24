@@ -29,9 +29,14 @@ end
 nodes = node[:macrdc][:nodes] || search(:node, "os:windows")
 
 nodes.each do |rdc|
+  begin
+    connection = Socket.gethostbyname(rdc[:fqdn]).first
+  rescue
+    connection = rdc[:ipaddress]
+  end
   template "#{node[:macrdc][:connections_dir]}/#{rdc[:hostname]}.rdp" do
     source "default.rdp"
-    variables(:rdc => rdc)
+    variables(:connection => connection)
   end
 end
 
