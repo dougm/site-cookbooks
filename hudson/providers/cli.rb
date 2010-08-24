@@ -32,7 +32,14 @@ def action_run
     source "node_info.groovy"
   end
 
-  command = "#{node[:hudson][:java]} -jar #{cli_jar} -s #{url} #{@new_resource.command}"
+  java_home = node[:hudson][:java_home] || (node.has_key?(:java) ? node[:java][:jdk_dir] : nil)
+  if java_home == nil
+    java = "java"
+  else
+    java = ::File.join(java_home, "bin", "java")
+  end
+
+  command = "#{java} -jar #{cli_jar} -s #{url} #{@new_resource.command}"
 
   hudson_execute command do
     cwd home

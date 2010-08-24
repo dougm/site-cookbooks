@@ -21,7 +21,7 @@ Hudson requires Java 1.5 or higher, which can be installed via the Opscode java 
 = ATTRIBUTES: 
 
 * hudson[:mirror] - Base URL for downloading Hudson (server)
-* hudson[:java] - Path to java binary for cli commands
+* hudson[:java_home] - Java install path, used for for cli commands
 * hudson[:server][:home] - HUDSON_HOME directory
 * hudson[:server][:user] - User the Hudson server runs as
 * hudson[:server][:port] - TCP listen port for the Hudson server

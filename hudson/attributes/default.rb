@@ -20,8 +20,6 @@
 
 default[:hudson][:mirror] = "http://hudson-ci.org"
 default[:hudson][:java_home] = ENV['JAVA_HOME']
-default[:hudson][:java] =
-  node[:hudson][:java_home] ? File.join(node[:hudson][:java_home], "bin", "java") : "java"
 
 default[:hudson][:server][:home] = "/var/lib/hudson"
 default[:hudson][:server][:user] = "hudson"
