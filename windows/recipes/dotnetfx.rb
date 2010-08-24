@@ -36,9 +36,10 @@ end
 log "installing Microsoft .NET Framework" do
   only_if do
     require 'win32/registry'
-    begin
-      Win32::Registry::HKEY_LOCAL_MACHINE.open('Software\Microsoft\.NETFramework')
-      false #already installed
+    begin #need at least v2
+      Win32::Registry::HKEY_LOCAL_MACHINE.open('Software\Microsoft\.NETFramework').keys.select {|subkey|
+        subkey =~ /^v[23]/
+      }.empty?
     rescue
       true
     end
