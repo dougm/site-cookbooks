@@ -33,7 +33,8 @@ execute exe do
   command %Q(#{cmd} /q:a /c:"install /q")
 end
 
-log "installing Microsoft .NET Framework" do
+ruby_block "installing Microsoft .NET Framework" do
+  block {}
   only_if do
     require 'win32/registry'
     begin #need at least v2
