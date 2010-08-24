@@ -34,7 +34,7 @@ nodes.each do |rdc|
   rescue
     connection = rdc[:ipaddress]
   end
-  template "#{node[:macrdc][:connections_dir]}/#{rdc[:hostname]}.rdp" do
+  template "#{node[:macrdc][:connections_dir]}/#{rdc[:hostname].downcase}.rdp" do
     source "default.rdp"
     variables(:connection => connection)
   end
