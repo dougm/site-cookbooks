@@ -48,6 +48,10 @@ Elevate privileges for the current process for tasks such as loading Registry Hi
 
 Run chef-client as a Windows service.  Depends on .NET Framework, which can be installed with the windows::dotnetfx recipe.
 
+== 'proxy' recipe
+
+Configure system proxy settings if Chef config 'http_proxy' is set.
+
 == 'activate' recipe
 
 Activates Windows "online" if not already activated.
