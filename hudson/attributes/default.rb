@@ -47,7 +47,7 @@ default[:hudson][:node][:executors] = 1
 
 #"Remote FS root"
 if node[:os] == "windows"
-  default[:hudson][:node][:home] = "C:\\hudson"
+  default[:hudson][:node][:home] = "C:/hudson"
 else
   default[:hudson][:node][:home] = "/home/hudson"
 end
