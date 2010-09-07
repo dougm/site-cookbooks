@@ -44,6 +44,7 @@ end
 
 remote_file junit do
   source node[:ant][:junit_jar]
+  mode "0444"
   not_if { ::File.exists?(junit) }
 end
 
