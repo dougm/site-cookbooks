@@ -25,7 +25,7 @@ default[:git][:dir] = "C:\\Git"
 #"Checkout Windows-style, commit Unix-style line endings" -> "input"
 #"Checkout as-is, commit Unix-style line endings" -> "true"
 #"Checkout as-is, commit as-is" -> "false"
-default[:git][:autocrlf] = "true"
+default[:git][:autocrlf] = "false"
 
 #Adjusting your PATH environment
 #"Use Git Bash only" -> "bashonly"
