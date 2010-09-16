@@ -33,5 +33,5 @@ end
 
 execute "install #{exe}" do
   command "#{dst} /VERYSILENT /TYPE=#{node[:xemacs][:type]} /DIR=#{node[:xemacs][:dir]}"
-  not_if { File.exists?("#{node[:xemacs][:dir]}\\#{node[:xemacs][:release]}") }
+  not_if { File.directory?("#{node[:xemacs][:dir]}\\XEmacs-#{node[:xemacs][:release]}") }
 end
