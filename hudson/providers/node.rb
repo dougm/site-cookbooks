@@ -30,6 +30,10 @@ def action_create
     backup false
   end
 
+  cookbook_file "#{node[:hudson][:node][:home]}/node_info.groovy" do
+    source "node_info.groovy"
+  end
+
   hudson_cli "groovy node_info.groovy #{new_resource.name}" do
     block do |stdout|
       current_node = JSON.parse(stdout)

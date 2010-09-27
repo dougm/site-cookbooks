@@ -22,14 +22,16 @@ def action_run
   url = @new_resource.url || node[:hudson][:server][:url]
   home = @new_resource.home || node[:hudson][:node][:home]
 
+  #recipes will chown to hudson later if this doesn't already exist
+  directory "home for hudson-cli.jar" do
+    action :create
+    path node[:hudson][:node][:home]
+  end
+
   cli_jar = ::File.join(home, "hudson-cli.jar")
   remote_file cli_jar do
     source "#{url}/jnlpJars/hudson-cli.jar"
     not_if { ::File.exists?(cli_jar) }
-  end
-
-  cookbook_file "#{home}/node_info.groovy" do
-    source "node_info.groovy"
   end
 
   java_home = node[:hudson][:java_home] || (node.has_key?(:java) ? node[:java][:jdk_dir] : nil)
