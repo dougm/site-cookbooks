@@ -18,6 +18,18 @@ Installs and configures Hudson CI server & node slaves.
 
 Hudson requires Java 1.5 or higher, which can be installed via the Opscode java cookbook or windows::java recipe.
 
+== Hudson node authentication:
+
+If your Hudson instance requires authentication, you'll either need to embed user:pass in the hudson.server.url or issue a hudson-cli.jar login command prior to using the hudson::node_* recipes.  For example, define a role like so:
+
+  name "hudson_ssh_node"
+  description "cli login & register ssh slave with Hudson"
+  run_list %w(vmw::hudson_login hudson::node_ssh)
+
+Where the hudson_login recipe is simply:
+
+  hudson_cli "login --username #{node[:hudson][:username]} --password #{node[:hudson][:password]}"
+
 = ATTRIBUTES: 
 
 * hudson[:mirror] - Base URL for downloading Hudson (server)
