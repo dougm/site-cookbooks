@@ -107,6 +107,31 @@ This resource can be used to configure nodes as the 'node_ssh' and 'node_windows
       env          "ANT_HOME" => "/usr/local/ant", "M2_REPO" => "/dev/null"
     end
 
+== 'hudson_job' resource provider
+
+This resource manages hudson jobs, supporting the following actions:
+
+   :create, :update, :delete, :build, :disable, :enable
+
+The 'create' and 'update' actions require a hudson job config.xml.  Example:
+
+    git_branch = 'master'
+    job_name = "sigar-#{branch}-#{node[:os]}-#{node[:kernel][:machine]}"
+
+    job_config = File.join(node[:hudson][:node][:home], "#{job_name}-config.xml")
+
+    hudson_job job_name do
+      action :nothing
+      config job_config
+    end
+
+    template job_config do
+      source "sigar-hudson-config.xml"
+      variables :job_name => job_name, :branch => git_branch, :node => node[:fqdn]
+      notifies :update, resources(:hudson_job => job_name), :immediately
+      notifies :build, resources(:hudson_job => job_name), :immediately
+    end
+
 == 'manage_node' library
 
 The script to generate groovy that manages a node can be used standalone.  For example:
