@@ -1,12 +1,12 @@
 = DESCRIPTION:
 
-Installs and configures Hudson CI server & node slaves.
+Installs and configures Hudson CI server & node slaves.  Resource providers to support automation via hudson-cli, including job create/update.
 
 = REQUIREMENTS:
 
 == Platform:
 
-* 'default' - Currently supports Red Hat/CentOS 5.x.
+* 'default' - Server installation - currently supports Red Hat/CentOS 5.x.
 
 * 'node_ssh' - Any platform that is running sshd.
 
