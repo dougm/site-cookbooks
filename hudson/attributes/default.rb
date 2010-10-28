@@ -23,6 +23,9 @@ default[:hudson][:java_home] = ENV['JAVA_HOME']
 
 default[:hudson][:server][:home] = "/var/lib/hudson"
 default[:hudson][:server][:user] = "hudson"
+# By default the group is set to node[:hudson][:server][:user] on RedHat and
+# CentOS, and 'nogroup' on Ubunut and Debian. You can set it explicitly here.
+# default[:hudson][:server][:group] =
 default[:hudson][:server][:port] = 8080
 default[:hudson][:server][:host] = node[:fqdn]
 default[:hudson][:server][:url]  = "http://#{node[:hudson][:server][:host]}:#{node[:hudson][:server][:port]}"

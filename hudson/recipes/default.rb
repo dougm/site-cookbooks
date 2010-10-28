@@ -37,12 +37,40 @@ end
 
 case node.platform
 when "ubuntu", "debian"
-  #see http://hudson-ci.org/debian/
-  #XXX revisit, didn't work for me on Ubuntu 10.4
+  # See http://hudson-ci.org/debian/
+
+  node[:hudson][:server][:group] ||= "nogroup"
+
+  package "daemon"
+  # These are both dependencies of the hudson deb package
+  package "jamvm"
+  package "openjdk-6-jre"
+
+  remote_file "/tmp/hudson.deb" do
+    source "http://hudson-ci.org/latest/debian/hudson.deb"
+  end
+
+
+  remote_file "/tmp/hudson_ci_key" do
+    source "http://hudson-ci.org/debian/hudson-ci.org.key"
+  end
+
+  execute "add-hudson-key" do
+    command "apt-key add /tmp/hudson_ci_key"
+    action :nothing
+  end
+
+  package "hudson" do
+    provider Chef::Provider::Package::Dpkg
+    source "/tmp/hudson.deb"
+    action :install
+  end
+
 when "centos", "redhat"
   #see http://hudson-ci.org/redhat/
 
-  dst = "/tmp/hudson.rpm"
+  node[:hudson][:server][:group] ||= node[:hudson][:server][:user]
+   dst = "/tmp/hudson.rpm"
 
   execute "rpm-import-hudson-ci.org.key" do
     command "rpm --import http://hudson-ci.org/redhat/hudson-ci.org.key"
@@ -72,12 +100,12 @@ directory "#{node[:hudson][:server][:home]}/.ssh" do
   action :create
   mode 0700
   owner node[:hudson][:server][:user]
-  group node[:hudson][:server][:user]
+  group node[:hudson][:server][:group]
 end
 
 execute "ssh-keygen -f #{pkey} -N ''" do
   user  node[:hudson][:server][:user]
-  group node[:hudson][:server][:user]
+  group node[:hudson][:server][:group]
   not_if { File.exists?(pkey) }
 end
 
