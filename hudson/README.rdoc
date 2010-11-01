@@ -6,11 +6,11 @@ Installs and configures Hudson CI server & node slaves.  Resource providers to s
 
 == Platform:
 
-* 'default' - Server installation - currently supports Red Hat/CentOS 5.x.
+* 'default' - Server installation - currently supports Red Hat/CentOS 5.x and Ubuntu 9.x/10.4
 
 * 'node_ssh' - Any platform that is running sshd.
 
-* 'node_jnlp' - Unix platforms.
+* 'node_jnlp' - Unix platforms. (not yet complete)
 
 * 'node_windows' - Windows platforms only.  Depends on .NET Framework, which can be installed with the windows::dotnetfx recipe.
 
@@ -36,6 +36,7 @@ Where the hudson_login recipe is simply:
 * hudson[:java_home] - Java install path, used for for cli commands
 * hudson[:server][:home] - HUDSON_HOME directory
 * hudson[:server][:user] - User the Hudson server runs as
+* hudson[:server][:group] - Hudson user primary group
 * hudson[:server][:port] - TCP listen port for the Hudson server
 * hudson[:server][:url] - Base URL of the Hudson server
 * hudson[:server][:plugins] - Download the latest version of plugins in this list, bypassing update center
