@@ -39,8 +39,6 @@ case node.platform
 when "ubuntu", "debian"
   # See http://hudson-ci.org/debian/
 
-  node[:hudson][:server][:group] ||= "nogroup"
-
   package "daemon"
   # These are both dependencies of the hudson deb package
   package "jamvm"
@@ -49,7 +47,6 @@ when "ubuntu", "debian"
   remote_file "/tmp/hudson.deb" do
     source "http://hudson-ci.org/latest/debian/hudson.deb"
   end
-
 
   remote_file "/tmp/hudson_ci_key" do
     source "http://hudson-ci.org/debian/hudson-ci.org.key"
@@ -69,8 +66,7 @@ when "ubuntu", "debian"
 when "centos", "redhat"
   #see http://hudson-ci.org/redhat/
 
-  node[:hudson][:server][:group] ||= node[:hudson][:server][:user]
-   dst = "/tmp/hudson.rpm"
+  dst = "/tmp/hudson.rpm"
 
   execute "rpm-import-hudson-ci.org.key" do
     command "rpm --import http://hudson-ci.org/redhat/hudson-ci.org.key"
