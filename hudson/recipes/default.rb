@@ -48,6 +48,10 @@ when "ubuntu", "debian"
   package "jamvm"
   package "openjdk-6-jre"
 
+  if node.platform == "debian"
+    package "psmisc"
+  end
+
   remote_file "#{tmp}/hudson-ci.org.key" do
     source "http://hudson-ci.org/debian/hudson-ci.org.key"
   end
