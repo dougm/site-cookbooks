@@ -22,6 +22,7 @@
 
 home = node[:hudson][:server][:home]
 pkey = "#{home}/.ssh/id_rsa"
+tmp = "/tmp"
 
 service "hudson" do
   action :nothing
@@ -39,52 +40,65 @@ case node.platform
 when "ubuntu", "debian"
   # See http://hudson-ci.org/debian/
 
+  remote = "#{node[:hudson][:mirror]}/latest/debian/hudson.deb"
+  package_provider = Chef::Provider::Package::Dpkg
+
   package "daemon"
   # These are both dependencies of the hudson deb package
   package "jamvm"
   package "openjdk-6-jre"
 
-  remote_file "/tmp/hudson.deb" do
-    source "http://hudson-ci.org/latest/debian/hudson.deb"
-  end
-
-  remote_file "/tmp/hudson_ci_key" do
+  remote_file "#{tmp}/hudson-ci.org.key" do
     source "http://hudson-ci.org/debian/hudson-ci.org.key"
   end
 
   execute "add-hudson-key" do
-    command "apt-key add /tmp/hudson_ci_key"
+    command "apt-key add #{tmp}/hudson-ci.org.key"
     action :nothing
-  end
-
-  package "hudson" do
-    provider Chef::Provider::Package::Dpkg
-    source "/tmp/hudson.deb"
-    action :install
   end
 
 when "centos", "redhat"
   #see http://hudson-ci.org/redhat/
 
-  dst = "/tmp/hudson.rpm"
+  remote = "#{node[:hudson][:mirror]}/latest/redhat/hudson.rpm"
+  package_provider = Chef::Provider::Package::Rpm
 
-  execute "rpm-import-hudson-ci.org.key" do
+  execute "add-hudson-key" do
     command "rpm --import http://hudson-ci.org/redhat/hudson-ci.org.key"
     action :nothing
   end
 
-  execute "install-hudson" do
-    command "rpm --force --install #{dst}"
+end
+
+local = ::File.join(tmp, ::File.basename(remote))
+
+remote_file local do
+  source remote
+  notifies :stop, "service[hudson]", :immediately
+  notifies :run, "execute[add-hudson-key]", :immediately
+  notifies :install, "package[hudson]", :immediately
+  if node[:hudson][:server][:use_head] #XXX remove when CHEF-1848 is merged
     action :nothing
   end
+end
 
-  remote_file dst do
-    source "#{node[:hudson][:mirror]}/latest/redhat/hudson.rpm"
-    notifies :stop, resources(:service => "hudson"), :immediately
-    notifies :run, resources(:execute => "rpm-import-hudson-ci.org.key"), :immediately
-    notifies :run, resources(:execute => "install-hudson"), :immediately
-    not_if { ::File.exists?(dst) }
+http_request "HEAD #{remote}" do
+  only_if { node[:hudson][:server][:use_head] } #XXX remove when CHEF-1848 is merged
+  message ""
+  url remote
+  action :head
+  if File.exists?(local)
+    headers "If-Modified-Since" => File.mtime(local).httpdate
   end
+  notifies :create, "remote_file[#{local}]", :immediately
+end
+
+#this is defined after http_request/remote_file because the package
+#providers will throw an exception if `source' doesn't exist
+package "hudson" do
+  provider package_provider
+  source local
+  action :nothing
 end
 
 user node[:hudson][:server][:user] do

@@ -39,6 +39,10 @@ default[:hudson][:server][:url]  = "http://#{node[:hudson][:server][:host]}:#{no
 #example: ["git", "URLSCM", ...]
 default[:hudson][:server][:plugins] = []
 
+#working around: http://tickets.opscode.com/browse/CHEF-1848
+#set to true if you have the CHEF-1848 patch applied
+default[:hudson][:server][:use_head] = false
+
 #See Hudson >> Nodes >> $name >> Configure
 
 #"Name"
