@@ -1,0 +1,6 @@
+#!/bin/sh
+exec 2>&1
+cd <%= node[:hudson][:node][:home] %>
+exec chpst -u <%= node[:hudson][:node][:user] %> \
+java -jar <%= node[:hudson][:node][:home] %>/slave.jar \
+-jnlpUrl <%= node[:hudson][:server][:url] %>/computer/<%= node[:hudson][:node][:name] %>/slave-agent.jnlp

@@ -10,7 +10,7 @@ Installs and configures Hudson CI server & node slaves.  Resource providers to s
 
 * 'node_ssh' - Any platform that is running sshd.
 
-* 'node_jnlp' - Unix platforms. (not yet complete)
+* 'node_jnlp' - Unix platforms. (depends on runit recipe)
 
 * 'node_windows' - Windows platforms only.  Depends on .NET Framework, which can be installed with the windows::dotnetfx recipe.
 
@@ -75,8 +75,7 @@ Creates the user and group for the Hudson slave to run as and sets `.ssh/authori
 
 == 'node_jnlp' recipe
 
-Creates the user and group for the Hudson slave to run as and '/jnlpJars/slave.jar' is downloaded from the Hudson server.
-TODO: runit_service or similar to launch the slave.
+Creates the user and group for the Hudson slave to run as and '/jnlpJars/slave.jar' is downloaded from the Hudson server.  Depends on runit_service from the runit cookbook.
 
 == 'node_windows' recipe
 

@@ -18,6 +18,11 @@
 # limitations under the License.
 #
 
+include_recipe "runit"
+
+service_name = "hudson-slave"
+slave_jar = "#{node[:hudson][:node][:home]}/slave.jar"
+
 group node[:hudson][:node][:user] do
 end
 
@@ -44,9 +49,13 @@ hudson_node node[:hudson][:node][:name] do
   availability node[:hudson][:node][:availability]
 end
 
-remote_file "#{node[:hudson][:node][:home]}/slave.jar" do
+remote_file slave_jar do
   source "#{node[:hudson][:server][:url]}/jnlpJars/slave.jar"
-  notifies :restart, resources(:service => service_name), :immediately
+  owner node[:hudson][:node][:user]
+  #only restart if slave.jar is updated
+  if ::File.exists?(slave_jar)
+    notifies :restart, "service[#{service_name}]", :immediately
+  end
 end
 
-#XXX runit_service or similar
+runit_service service_name
