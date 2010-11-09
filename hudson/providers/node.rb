@@ -53,7 +53,7 @@ def action_create
   end
 
   ruby_block "new_resource.updated" do
-    block { new_resource.updated = true }
+    block { new_resource.updated_by_last_action(true) }
     only_if { ::File.exists?(gscript) }
   end
 end

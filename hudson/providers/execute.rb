@@ -35,7 +35,7 @@ def action_run
   status, stdout, stderr = output_of_command(args[:command], args)
   if status.exitstatus == 0
     @new_resource.block.call(stdout) if @new_resource.block
-    @new_resource.updated = true
+    @new_resource.updated_by_last_action(true)
     Chef::Log.info("Ran #{@new_resource} successfully")
   else
     command_output =  "HUDSON STDOUT: #{stdout}"
