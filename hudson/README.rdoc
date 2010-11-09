@@ -4,6 +4,10 @@ Installs and configures Hudson CI server & node slaves.  Resource providers to s
 
 = REQUIREMENTS:
 
+== Chef:
+
+* Chef version 0.9.10 or higher
+
 == Platform:
 
 * 'default' - Server installation - currently supports Red Hat/CentOS 5.x and Ubuntu 9.x/10.4
