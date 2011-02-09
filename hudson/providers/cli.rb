@@ -22,16 +22,31 @@ def action_run
   url = @new_resource.url || node[:hudson][:server][:url]
   home = @new_resource.home || node[:hudson][:node][:home]
 
+  jnlp_jar = "jnlpJars/hudson-cli.jar"
+  cli_jar = ::File.join(home, ::File.basename(jnlp_jar))
+  remote_cli_jar = "#{url}/#{jnlp_jar}"
+
   #recipes will chown to hudson later if this doesn't already exist
-  directory "home for hudson-cli.jar" do
+  directory "home for #{::File.basename(jnlp_jar)}" do
     action :create
     path node[:hudson][:node][:home]
   end
 
-  cli_jar = ::File.join(home, "hudson-cli.jar")
   remote_file cli_jar do
-    source "#{url}/jnlpJars/hudson-cli.jar"
-    not_if { ::File.exists?(cli_jar) }
+    source remote_cli_jar
+    mode "0644"
+    backup false
+    action :nothing
+  end
+
+  http_request "HEAD /#{jnlp_jar}" do
+    message ""
+    url remote_cli_jar
+    action :head
+    if ::File.exists?(cli_jar)
+      headers "If-Modified-Since" => ::File.mtime(cli_jar).httpdate
+    end
+    notifies :create, resources(:remote_file => cli_jar), :immediately
   end
 
   java_home = node[:hudson][:java_home] || (node.has_key?(:java) ? node[:java][:jdk_dir] : nil)
