@@ -60,7 +60,8 @@ end
 # <false>:: If the nodes are identical
 def hudson_node_compare(current_node, new_node)
   new_node = hudson_node_defaults(new_node)
-  default = hudson_node_defaults({})
+  default = hudson_node_defaults({:launcher => new_node[:launcher],
+                                  :availability => new_node[:availability]})
   default.keys.each do |key|
     val = new_node[key] || default[key]
     if !val.nil? && current_node[key.to_s] != val
