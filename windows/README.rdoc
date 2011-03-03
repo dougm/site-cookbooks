@@ -112,6 +112,10 @@ Download/install Python and update system PATH.
 
 Download/install XEmacs.
 
+== 'gnuwin32'
+
+Download/install gnuwin32 packages (dmidecode by default) and update system PATH.
+
 == 'macrdc'
 
 Download/install Remote Desktop Connection Client for Mac and generate ~/Documents/RDC\ Connections/*.rdp for each Windows node in the Chef server's inventory.  For use like so:
