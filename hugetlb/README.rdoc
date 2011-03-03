@@ -1,0 +1,93 @@
+= DESCRIPTION:
+
+Configure HugeTLB aka "huge pages" aka "large pages"
+
+"A Translation-Lookaside Buffer (TLB) is a page translation cache that holds the most-recently used virtual-to-physical address translations. TLB is a scarce system resource. A TLB miss can be costly as the processor must then read from the hierarchical page table, which may require multiple memory accesses. By using bigger page size, a single TLB entry can represent larger memory range. There will be less pressure on TLB and memory-intensive applications may have better performance." [1]
+
+[1] http://www.oracle.com/technetwork/java/javase/tech/largememory-jsp-137182.html
+
+= REQUIREMENTS:
+
+Linux
+
+= ATTRIBUTES: 
+
+== writeable
+
+* hugetlb[:kernel][:shmmax] - maximum size of a shared memory segment in bytes or % of node.memory.total
+* hugetlb[:vm][:nr_hugepages] - number of large pages the kernel should pre-allocate or % of node.memory.total 
+* hugetlb[:vm][:hugetlb_shm_group] - gid or group name permitted to create hugetlb pages via shared memory
+* hugetlb[:limit_memlock][:soft] - soft memlock limit for hugetlb_shm_group in kB or % of node.memory.total
+* hugetlb[:limit_memlock][:hard] - hard memlock limit for hugetlb_shm_group in kB or % of node.memory.total
+
+== read-only
+
+* hugetlb[:boot][:config_hugetlb_page] - true if hugetlb is enabled on kernel boot
+* hugetlb[:boot][:config_hugetlbfs] - true if hugetlbfs is enabled on kernel boot
+* memory[:hugepages_rsvd] - Number of huge pages for which a commitment to allocate from the pool has been made, but no allocation has yet been made.
+* memory[:hugepagesize] - Huge page size for the system
+* memory[:hugepages_free] - Number of hugepages not yet allocated
+* memory[:hugepages_total] - Size of the pool of huge pages
+
+= USAGE:
+
+Settings will be applied at runtime via /proc and persisted via /etc/sysctl.d and /etc/security/limits.d
+
+Example role:
+
+  name "hugetlb"
+  run_list "hugetlb::linux"
+  
+  override_attributes \
+  :hugetlb => {
+    :limit_memlock => {
+      :soft => "76%",
+      :hard => "76%"
+    },
+    :vm => {
+      :hugetlb_shm_group => "admin",
+      :nr_hugepages => "75%"
+    },
+    :kernel => {
+      :shmmax => "80%"
+    }
+  }
+
+This recipe does not configure applications to make use of hugetlb.  You'll need to bake that in yourself, for example:
+
+* Java : -XX:+UseLargePages (sun) or -Xlp (ibm)
+
+* memcached : -L flag
+
+* MySQL : [mysqld] large-pages in my.conf
+
+* Oracle : use_large_pages=only in init.ora
+
+= REFERENCES:
+
+http://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt
+
+http://linux-mm.org/HugePages
+
+http://wiki.debian.org/Hugepages
+
+http://linuxgazette.net/155/krishnakumar.html
+
+http://en.wikipedia.org/wiki/Translation_lookaside_buffer
+
+= LICENSE & AUTHOR:
+
+Author:: Doug MacEachern (<dougm@vmware.com>)
+Copyright:: 2011, VMware, Inc
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
