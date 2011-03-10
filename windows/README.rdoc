@@ -116,6 +116,32 @@ Download/install XEmacs.
 
 Download/install gnuwin32 packages (dmidecode by default) and update system PATH.
 
+== 'winrm'
+
+Configure winrm settings.  Example role:
+
+  name "winrm"
+  run_list "winrm"
+
+  override_attributes \
+  :winrm => {
+    :config => {
+      :service => {
+        :allowUnencrypted => true,
+        :enableCompatibilityHttpListener => true,
+        :enableCompatibilityHttpsListener => true,
+        :auth => {
+          :basic => true
+        }
+      },
+      :winrs => {
+        :MaxMemoryPerShellMB => 300
+      }
+    }
+  }
+
+See the knife-windows gem for great victory.
+
 == 'macrdc'
 
 Download/install Remote Desktop Connection Client for Mac and generate ~/Documents/RDC\ Connections/*.rdp for each Windows node in the Chef server's inventory.  For use like so:
