@@ -18,5 +18,6 @@
 #
 
 if RUBY_PLATFORM =~ /mswin|mingw32|windows/
-  default[:winrm] = winrm_attributes_get
+  winrm = winrm_attributes_get
+  default[:winrm] = winrm if winrm
 end

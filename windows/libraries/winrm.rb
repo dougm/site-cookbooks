@@ -66,11 +66,15 @@ def winrm_to_xml(hash)
 end
 
 def winrm_attributes_get
-  wsman = WIN32OLE.new("WSMAN.Automation")
-  session = wsman.CreateSession
-  locator = wsman.CreateResourceLocator("winrm/config")
-  xml = session.Get(locator)
-  winrm_to_hash(xml)
+  begin
+    wsman = WIN32OLE.new("WSMAN.Automation")
+    session = wsman.CreateSession
+    locator = wsman.CreateResourceLocator("winrm/config")
+    xml = session.Get(locator)
+    winrm_to_hash(xml)
+  rescue
+    nil #winrm components are not installed
+  end
 end
 
 def winrm_attributes_set(hash)
