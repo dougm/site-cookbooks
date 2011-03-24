@@ -92,6 +92,10 @@ Download/install msysgit, update system PATH and configure global core autocrlf 
 
 Download/install Apache Ant, update system PATH and set ANT_HOME system environment variable.
 
+== 'maven' recipe
+
+Download/install Apache Maven, update system PATH and set M2_HOME system environment variable.
+
 == 'java' recipe
 
 Download/install Java JDK, update system PATH and set JAVA_HOME system environment variable.
