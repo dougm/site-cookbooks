@@ -48,6 +48,7 @@ Where the hudson_login recipe is simply:
 * hudson[:node][:description] - Hudson node description
 * hudson[:node][:executors] - Number of node executors
 * hudson[:node][:home] - Home directory ("Remote FS root") of the node
+* hudson][:node][:cli_jar] - Use "jnlpJars/jenkins-cli.jar" so existing hudson slaves can talk to jenkins
 * hudson[:node][:labels] - Node labels
 * hudson[:node][:mode] - Node usage mode, "normal" or "exclusive" (tied jobs only)
 * hudson[:node][:launcher] - Node launch method, "jnlp", "ssh" or "command"

@@ -22,7 +22,7 @@ def action_run
   url = @new_resource.url || node[:hudson][:server][:url]
   home = @new_resource.home || node[:hudson][:node][:home]
 
-  jnlp_jar = "jnlpJars/hudson-cli.jar"
+  jnlp_jar = node[:hudson][:node][:cli_jar]
   cli_jar = ::File.join(home, ::File.basename(jnlp_jar))
   remote_cli_jar = "#{url}/#{jnlp_jar}"
 

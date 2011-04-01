@@ -48,6 +48,8 @@ default[:hudson][:server][:use_head] = false
 #"Name"
 default[:hudson][:node][:name] = node[:fqdn]
 
+default[:hudson][:node][:cli_jar] = "jnlpJars/hudson-cli.jar"
+
 #"Description"
 default[:hudson][:node][:description] =
   "#{node[:platform]} #{node[:platform_version]} " <<

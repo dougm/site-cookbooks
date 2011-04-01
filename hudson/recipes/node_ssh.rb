@@ -24,7 +24,12 @@ unless node[:hudson][:server][:pubkey]
     host = URI.parse(node[:hudson][:server][:url]).host
   end
   hudson_node = search(:node, "fqdn:#{host}").first
-  node.set[:hudson][:server][:pubkey] = hudson_node[:hudson][:server][:pubkey]
+  [:hudson, :jenkins].each do |name|
+    if hudson_node[name]
+      node.set[:hudson][:server][:pubkey] = hudson_node[name][:server][:pubkey]
+      break
+    end
+  end
 end
 
 group node[:hudson][:node][:user] do
