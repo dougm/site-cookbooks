@@ -40,7 +40,7 @@ if node[:os] == "linux"
 
   #XXX >> ohai/plugins/linux/memory.rb
   File.open("/proc/meminfo").readlines.each do |line|
-    next unless line =~ /^Huge/
+    next unless line =~ /^(Anon)?Huge/
     key, val = line.split(/:\s+/)
     node.automatic_attrs[:memory][key.downcase] = val.gsub(/\s+/, "")
   end
@@ -52,8 +52,20 @@ if node[:os] == "linux"
     end
   end
 
+  #2.6.38+ kernels only
+  Dir["/sys/kernel/mm/transparent_hugepage/*"].each do |file|
+    key = File.basename(file)
+    if File.directory?(file)
+      Dir["#{file}/*"].each do |name|
+        default[:hugetlb][:mm][:transparent_hugepage][key][File.basename(name)] = file_readline(name)
+      end
+    else
+      default[:hugetlb][:mm][:transparent_hugepage][key] = file_readline(file)
+    end
+  end
+
   File.open("/boot/config-#{node.kernel.release}").readlines.each do |line|
-    next unless line =~ /^CONFIG_HUGETLB/
+    next unless line =~ /^CONFIG_(HUGETLB|TRANSPARENT_HUGEPAGE)/
     key, val = line.strip.split("=")
     default[:hugetlb][:boot][key.downcase] = (val == "y")
   end
