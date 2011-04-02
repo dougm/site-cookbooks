@@ -146,6 +146,10 @@ Configure winrm settings.  Example role:
 
 See the knife-windows gem for great victory.
 
+== 'rbdevkit'
+
+Download/install the RubyInstaller DevKit for building native gems on Windows.
+
 == 'macrdc'
 
 Download/install Remote Desktop Connection Client for Mac and generate ~/Documents/RDC\ Connections/*.rdp for each Windows node in the Chef server's inventory.  For use like so:
