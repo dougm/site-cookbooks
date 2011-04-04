@@ -56,8 +56,18 @@ if delta != 0
       end
       Chef::Log.warn(msg)
     else
-      execute "dd if=/dev/zero of=#{filename} bs=1M count=#{delta}"
-      execute "mkswap #{filename}"
+      execute "dd if=/dev/zero of=#{filename} bs=1M count=#{delta}" do
+        not_if do
+          File.exists?(filename) and (File.size(filename) / (1024*1024)) == delta
+        end
+      end
+
+      execute "mkswap #{filename}" do
+        not_if do
+          IO.popen("file -b #{filename}").readlines.first =~ /swap file/
+        end
+      end
+
       execute "swapon #{filename}"
     end
 
