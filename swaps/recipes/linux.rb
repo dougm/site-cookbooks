@@ -20,10 +20,12 @@
 
 if node[:swaps][:total] #how much you want?
   total = node[:swaps][:total]
+  memsize = node.memory.total.to_i / 1024
+  swapsize = node.memory.swap.total.to_i / 1024
   if total =~ /%$/
-    total = ((node.memory.total.to_i * total.to_i) / 100)
+    total = ((memsize * total.to_i) / 100)
   end
-  delta = (total.to_i - node.memory.swap.total.to_i) / 1024
+  delta = total.to_i - swapsize
   delta = 0 if delta == 1 #cut some slack
 else
   delta = 0
