@@ -1,0 +1,103 @@
+= DESCRIPTION:
+
+The vsphere::vminfo recipe uses rbvmomi from within guest VMs to add vSphere related attributes to Chef nodes.  These attributes can be used via knife or within other recipes just like any other node attributes.
+
+= REQUIREMENTS:
+
+* ESXi 4.1 or higher
+
+* rbvmomi gem (1.7.1 or higher)
+
+= ATTRIBUTES: 
+
+== writeable
+
+* vsphere[:connection][:host] = nil
+* vsphere[:connection][:user] = 'root'
+* vsphere[:connection][:password] = ''
+* vsphere[:connection][:ssl] = true
+* vsphere[:connection][:insecure] = true #verify ssl certificate
+* vsphere[:connection][:port] = 443
+* vsphere[:connection][:path] = '/sdk'
+
+== read-only
+
+The majority of attributes are related to the Virtual Machine configuration, such as memory size/limits, cpu, virtual disk/swap layouts and .vmx/guestinfo (aka "extra") configuration.  Runtime attributes include VM summary stats and host system the VM is currently running on along with its product/version info.  For the complete list see:
+
+  % knife show `hostname -f` -a vsphere.vm
+
+= USAGE:
+
+Virtual Machine info via role:
+
+  #roles/my-cluster-vminfo.rb
+  name "my-cluster-vminfo"
+  
+  run_list "vsphere::vminfo"
+  
+  override_attributes \ #vCenter or ESXi host connection props
+  :vsphere => {
+    :connection => {
+      :host => "vcenter-hostname",
+      :user => "vcenter-username",
+      :password => "vcenter-password",
+      :insecure => true #self-signed ssl cert ok
+    }
+  }
+
+VM summary stats:
+
+  % knife node show `hostname -f` -a vsphere.vm.summary.quickStats
+  { 
+    "vsphere.vm.summary.quickStats": {
+      "guestMemoryUsage": 39,
+      "hostMemoryUsage": 1259,
+      "privateMemory": 1231,
+      "compressedMemory": 0,
+      "balloonedMemory": 0,
+      "sharedMemory": 0,
+      "swappedMemory": 0,
+      "consumedOverheadMemory": 28
+    }
+  }
+
+Current host system product info:
+
+  % knife node show `hostname -f` -a vsphere.vm.runtime.host.product
+  {
+    "vsphere.vm.runtime.host.product": {
+      "name": "VMware ESXi",
+      "fullName": "VMware ESXi 5.0.0 build-368598",
+      "build": "368598",
+      "version": "5.0.0",
+      "vendor": "VMware, Inc.",
+      "apiType": "HostAgent",
+      "osType": "vmnix-x86",
+      "apiVersion": "5.0"
+    }
+  }
+
+Find all VMs with a particular .vmx extra config property:
+
+  % knife exec -E 'nodes.all.select {|n| n.vsphere.vm.config.extra["sched.mem.pshare.guestHintsSyncEnable"] }.each {|vm| puts vm.fqdn}'
+
+= REFERENCES:
+
+https://github.com/vmware/rbvmomi
+
+= LICENSE & AUTHOR:
+
+Author:: Doug MacEachern (<dougm@vmware.com>)
+Copyright:: 2011, VMware, Inc
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
