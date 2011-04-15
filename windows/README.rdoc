@@ -150,6 +150,10 @@ See the knife-windows gem for great victory.
 
 Download/install the RubyInstaller DevKit for building native gems on Windows.
 
+== 'mingw'
+
+Download/install mingw and update system PATH.
+
 == 'macrdc'
 
 Download/install Remote Desktop Connection Client for Mac and generate ~/Documents/RDC\ Connections/*.rdp for each Windows node in the Chef server's inventory.  For use like so:
