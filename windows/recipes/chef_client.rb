@@ -24,9 +24,9 @@ home = 'c:\chef\bin'
 chef_exe = "#{home}\\chef-client.exe"
 service_name = "chefclient"
 
-directory home do
-  action :create
-end
+directory home
+
+directory 'c:\chef\log'
 
 template "#{home}/chef-client.xml" do
   source "chef-client.xml"
