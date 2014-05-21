@@ -24,16 +24,19 @@ home = 'c:\chef\bin'
 chef_exe = "#{home}\\chef-client.exe"
 service_name = "chefclient"
 
-directory home do
-  action :create
-end
+directory home
+
+directory 'c:\chef\log'
 
 template "#{home}/chef-client.xml" do
   source "chef-client.xml"
 end
 
+# TODO (mat): Running install on winsw-1.9 during first boostrap exits on 42.
+#             Try 1.11 (From hudson team)
+# NOTE: This project lives at https://github.com/kohsuke/winsw
 remote_file chef_exe do
-  source "http://maven.dyndns.org/2/com/sun/winsw/winsw/1.8/winsw-1.8-bin.exe"
+  source "http://download.java.net/maven/2/com/sun/winsw/winsw/1.9/winsw-1.9-bin.exe"
   not_if { File.exists?(chef_exe) }
 end
 
