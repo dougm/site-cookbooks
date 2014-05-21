@@ -155,9 +155,9 @@ class Spork
 
     files.each do |file|
       if File.directory?(file)
-        FileUtils.cp_r(file, path, {:verbose, true})
+        FileUtils.cp_r(file, path, {:verbose => true})
       else
-        FileUtils.cp(file, fjoin(path, File.basename(file)), {:verbose, true})
+        FileUtils.cp(file, fjoin(path, File.basename(file)), {:verbose => true})
       end
     end
   end
@@ -212,7 +212,7 @@ class Spork
 
   def cmd_solo(args)
     cmd = ruby_bin('chef-solo')
-    {'-c', 'solo.rb', '-j', 'node.rb'}.each do |opt,val|
+    {'-c' => 'solo.rb', '-j' => 'node.rb'}.each do |opt,val|
       if File.exists?(fjoin(admin_share, workdir, val))
         cmd << opt << val
       end
